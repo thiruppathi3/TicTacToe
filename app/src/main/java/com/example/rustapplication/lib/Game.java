@@ -9,13 +9,13 @@ public final class Game {
     }
     private static native long init();
 
-    public final GameState input(int number) {
-        int ret = do_input(mNativeObj, number);
+    public final GameState processInput(int number) {
+        int ret = do_processInput(mNativeObj, number);
         GameState convRet = GameState.fromInt(ret);
 
         return convRet;
     }
-    private static native int do_input(long self, int number);
+    private static native int do_processInput(long self, int number);
 
     public synchronized void delete() {
         if (mNativeObj != 0) {

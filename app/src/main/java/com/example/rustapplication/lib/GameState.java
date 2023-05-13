@@ -6,8 +6,9 @@ public enum GameState {
     XWon(0),
     OWon(1),
     DRAW(2),
-    Playing(3),
-    Error(4);
+    XToPlay(3),
+    OToPlay(4),
+    Error(5);
 
     private final int value;
     GameState(int value) {
@@ -19,8 +20,9 @@ public enum GameState {
             case 0: return XWon;
             case 1: return OWon;
             case 2: return DRAW;
-            case 3: return Playing;
-            case 4: return Error;
+            case 3: return XToPlay;
+            case 4: return OToPlay;
+            case 5: return Error;
             default: throw new Error("Invalid value for enum GameState: " + x);
         }
     }

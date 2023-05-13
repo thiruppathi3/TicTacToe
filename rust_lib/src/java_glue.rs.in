@@ -6,7 +6,8 @@ foreign_enum!(
 		XWon = GameState::XWon,
 		OWon = GameState::OWon,
 		DRAW = GameState::DRAW,
-		Playing = GameState::Playing,
+		XToPlay = GameState::XToPlay,
+		OToPlay = GameState::OToPlay,
 		Error = GameState::Error,
 	}
 );
@@ -14,6 +15,6 @@ foreign_class!(
 	class Game {
 		self_type Game;
 		constructor Game::new()->Game;
-		fn Game::input(& mut self , number : i32)->GameState; alias input;
+		fn Game::process_input(& mut self , number : i32)->GameState; alias processInput;
 	}
 );

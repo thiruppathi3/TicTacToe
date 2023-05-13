@@ -2,21 +2,22 @@ use crate::board::BoardPosition;
 use crate::board::BoardPosition::{NotOccupied, Occupied};
 use rifgen::rifgen_attr::*;
 use crate::{board::Board, player::Player};
-use crate::GameState::{OWon, XWon};
+use crate::game::GameState::{OToPlay, OWon, XToPlay, XWon};
 
 #[generate_interface]
 pub enum GameState {
     XWon,
     OWon,
     DRAW,
-    Playing,
+    XToPlay,
+    OToPlay,
     Error,
 }
 
 
 pub struct Game {
     board: Board,
-    current_player: Player,
+    pub current_player: Player,
 }
 
 impl Game {
@@ -63,7 +64,7 @@ impl Game {
                     continue;
                 }
                 let number = number - 1;
-                self.input(number as i32);
+                self.process_input(number as i32);
                 break;
             } else {
                 println!("Only numbers are allowed.");
@@ -72,21 +73,15 @@ impl Game {
         }
     }
     #[generate_interface]
-    pub fn input(&mut self, number: i32) -> GameState {
+    pub fn process_input(&mut self, number: i32) -> GameState {
         let mut state = self.board().state();
         match state[number as usize] {
-            NotOccupied(_) => {}
-            Occupied(player) =>
-                if player == Player::X || player == Player::O {
-                    print!("This field is already taken by '");
-                    player.print();
-                    println!("'.");
-                }
+            NotOccupied(_) => {
+                state[number as usize] = Occupied(self.current_player);
+                self.board.update_state(state);
+            }
+            Occupied(player) => {}
         }
-
-        state[number as usize] = Occupied(self.current_player);
-
-        self.board.update_state(state);
 
         if self.is_won_by_any_player() {
             return match self.current_player {
@@ -101,7 +96,15 @@ impl Game {
         if self.is_over() {
             return GameState::DRAW;
         }
-        GameState::Playing
+        self.switch_player();
+        match self.current_player {
+            Player::X => {
+                XToPlay
+            }
+            Player::O => {
+                OToPlay
+            }
+        }
     }
 
     // #[generate_interface]
